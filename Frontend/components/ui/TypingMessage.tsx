@@ -5,7 +5,7 @@ interface TypingMessageProps {
   speed?: number; // milliseconds per character
 }
 
-export default function TypingMessage({ text, speed = 20 }: TypingMessageProps) {
+export default function TypingMessage({ text, speed = 30 }: TypingMessageProps) {
   const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {

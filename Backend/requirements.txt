@@ -1,9 +1,13 @@
 fastapi
-uvicorn[standard]
-
+uvicorn
+sentence-transformers
 langchain
 langchain-core
 langchain-community
+langchain-chroma
 
 pydantic
 requests
+python-multipart
+langchain-text-splitters
+langchain-huggingface

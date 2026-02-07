@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React,{useCallback} from 'react'
 import { FaPlus } from "react-icons/fa6";
 import { IoSend } from "react-icons/io5";
 import HeaderTitle from '@/components/ui/Headertitles';
@@ -37,16 +37,42 @@ export default function Page() {
       setIsTyping(false);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-      setChatMessages(prev => [...prev, { sender: "bot", text: "Error: " + errorMessage }]);
+      setChatMessages(prev => [...prev, { sender: "bot", text: "Error: " + "Something went wrongPlease start new conversation" }]);
       setIsTyping(false);
     }
   };
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async(e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const uploadedFile = e.target.files?.[0];
+    if (uploadedFile) {
+      setFile(uploadedFile);
+      setChatMessages(prev => [...prev, { sender: "user", text: `Uploaded file: ${uploadedFile.name}` }]);
+      try{
+         const forData = new FormData();
+         forData.append('file', uploadedFile);
+         const response = await fetch('http://localhost:8000/upload', {
+          method: 'POST',
+          body: forData,
+         });
+         const data = await response.json();
+         console.log(data);
+         setChatMessages(prev => [...prev, { sender: "bot", text: data.response }]);
+         // You can handle the response as needed
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        setChatMessages(prev => [...prev, { sender: "bot", text: "Error: " + "Something went wrongPlease start new conversation" }]);
+      }
+     
+      
+    }
+  };
+
+  const handleClickupload = useCallback(() => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
-  };
+  }, []);
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center px-3 sm:px-6">
@@ -62,11 +88,12 @@ export default function Page() {
         <div className="flex items-center gap-3 px-3 sm:px-4 py-3 sm:py-2 rounded-full shadow-md bg-primary text-white mt-9">
           <FaPlus 
           className="text-lg sm:text-xl text-gray-400 hover:text-gray-400 cursor-pointer" 
-          onClick={handleFileUpload}
+          onClick={handleClickupload}
           />
           <input 
           ref={fileInputRef}
           type="file"
+          onChange={handleFileUpload}
           accept='.txt,.doc,.pdf'
           className="hidden"
 

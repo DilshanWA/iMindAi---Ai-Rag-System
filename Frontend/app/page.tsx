@@ -8,5 +8,5 @@ export default function Home() {
     router.push('/chat');
   };
 
-  return <button onClick={handleClick}>Go to About</button>;
+  return <button onClick={handleClick}>Go to Chat</button>;
 }
